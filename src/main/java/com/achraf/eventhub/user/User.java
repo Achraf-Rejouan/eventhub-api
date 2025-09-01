@@ -1,7 +1,11 @@
 package com.achraf.eventhub.user;
 
+import com.achraf.eventhub.event.Event;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,12 +20,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    private String userName;
+
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
-    private String firstName;
-    private String lastName;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    // One user can create many events
+    @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Event> events;
 }
