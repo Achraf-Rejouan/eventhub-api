@@ -7,12 +7,14 @@ import com.achraf.eventhub.user.User;
 import com.achraf.eventhub.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
+@Order(2) // Ensure this runs after UserSeeder
 public class EventSeeder implements CommandLineRunner {
 
     private final EventService eventService;

@@ -5,10 +5,12 @@ import com.achraf.eventhub.user.User;
 import com.achraf.eventhub.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Order(1) // Ensure this runs before EventSeeder
 public class UserSeeder implements CommandLineRunner {
 
     private final UserService userService;

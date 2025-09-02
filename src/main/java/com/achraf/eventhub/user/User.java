@@ -3,6 +3,7 @@ package com.achraf.eventhub.user;
 import com.achraf.eventhub.event.Event;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 
 import java.util.List;
@@ -18,10 +19,12 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String userName;
 
+    @Valid
+    @Column(unique = true)
     private String email;
 
     private String password;
