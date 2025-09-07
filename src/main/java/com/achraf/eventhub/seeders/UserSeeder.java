@@ -19,13 +19,13 @@ public class UserSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (userService.getAllUsers().isEmpty()) {
             User admin = new User();
-            admin.setUserName("Admin User");
+            admin.setUsername("Admin User");
             admin.setEmail("admin@eventhub.com");
             admin.setPassword("password123");
             admin.setRole(Role.ADMIN);
 
             User user = new User();
-            user.setUserName("Regular User");
+            user.setUsername("Regular User");
             user.setEmail("user@eventhub.com");
             user.setPassword("password321");
             user.setRole(Role.USER);

@@ -1,5 +1,7 @@
 package com.achraf.eventhub.event;
 
+import com.achraf.eventhub.user.User;
+import com.achraf.eventhub.user.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,32 +15,33 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final EventMapper eventMapper;
+    private final UserRepository userRepository;
 
     @GetMapping
-    public List<Event> getAllEvents() {
-        return eventService.getAllEvents();
+    public ResponseEntity<List<EventResponseDto>> getAllEvents() {
+        List<EventResponseDto> events = eventService.getAllEvents()
+                .stream()
+                .map(eventMapper::toResponseDto)
+                .toList();
+        return ResponseEntity.ok(events);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Integer id) {
+    public ResponseEntity<EventResponseDto> getEventById(@PathVariable Integer id) {
         return eventService.getEventById(id)
+                .map(eventMapper::toResponseDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Event createEvent(@Valid @RequestBody Event event) {
-        return eventService.createEvent(event);
-    }
+    public ResponseEntity<EventResponseDto> createEvent(@Valid @RequestBody EventDto dto) {
+        User organizer = userRepository.findById(dto.organizerId())
+                .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Integer id, @Valid @RequestBody Event event) {
-        return eventService.getEventById(id)
-                .map(existingEvent -> {
-                    event.setId(existingEvent.getId());
-                    return ResponseEntity.ok(eventService.updateEvent(event));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Event savedEvent = eventService.createEvent(eventMapper.toEntity(dto, organizer));
+        return ResponseEntity.ok(eventMapper.toResponseDto(savedEvent));
     }
 
     @DeleteMapping("/{id}")
