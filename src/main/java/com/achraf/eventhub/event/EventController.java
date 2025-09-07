@@ -1,5 +1,6 @@
 package com.achraf.eventhub.event;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +27,12 @@ public class EventController {
     }
 
     @PostMapping
-    public Event createEvent(@RequestBody Event event) {
+    public Event createEvent(@Valid @RequestBody Event event) {
         return eventService.createEvent(event);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Integer id, @RequestBody Event event) {
+    public ResponseEntity<Event> updateEvent(@PathVariable Integer id, @Valid @RequestBody Event event) {
         return eventService.getEventById(id)
                 .map(existingEvent -> {
                     event.setId(existingEvent.getId());

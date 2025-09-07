@@ -42,7 +42,7 @@ public class EventSeeder implements CommandLineRunner {
             event2.setTitle("Music Festival");
             event2.setDescription("A weekend of live music and fun.");
             event2.setLocation("Carthage Amphitheatre");
-            event2.setDate(LocalDateTime.of(2025, 7, 20, 15, 0));
+            event2.setDate(LocalDateTime.of(2025, 10, 20, 15, 0));
             event2.setAvailableSeats(500);
             event2.setPrice(99.99);
             event2.setOrganizer(admin);

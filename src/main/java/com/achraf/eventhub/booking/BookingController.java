@@ -1,5 +1,6 @@
 package com.achraf.eventhub.booking;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking createBooking(@RequestBody Booking booking) {
+    public Booking createBooking(@Valid @RequestBody Booking booking) {
         return bookingService.createBooking(booking);
     }
 
