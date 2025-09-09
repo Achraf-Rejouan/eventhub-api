@@ -6,10 +6,10 @@ import com.achraf.eventhub.user.User;
 import com.achraf.eventhub.user.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/bookings")
@@ -22,11 +22,9 @@ public class BookingController {
     private final EventRepository eventRepository;
 
     @GetMapping
-    public ResponseEntity<List<BookingResponseDto>> getAllBookings() {
-        List<BookingResponseDto> bookings = bookingService.getAllBookings()
-                .stream()
-                .map(bookingMapper::toResponseDto)
-                .toList();
+    public ResponseEntity<Page<BookingResponseDto>> getAllBookings(Pageable pageable) {
+        Page<BookingResponseDto> bookings = bookingService.getAllBookings(pageable)
+                .map(bookingMapper::toResponseDto);
         return ResponseEntity.ok(bookings);
     }
 
@@ -49,9 +47,67 @@ public class BookingController {
         return ResponseEntity.ok(bookingMapper.toResponseDto(savedBooking));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BookingResponseDto> updateBooking(
+            @PathVariable Integer id,
+            @Valid @RequestBody BookingDto dto
+    ) {
+        User user = userRepository.findById(dto.userId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Event event = eventRepository.findById(dto.eventId())
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        Booking updatedBooking = bookingMapper.toEntity(dto, user, event);
+        Booking savedBooking = bookingService.updateBooking(id, updatedBooking);
+        return ResponseEntity.ok(bookingMapper.toResponseDto(savedBooking));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookingResponseDto> patchBooking(
+            @PathVariable Integer id,
+            @RequestBody BookingDto dto
+    ) {
+        User user = null;
+        if (dto.userId() != null) {
+            user = userRepository.findById(dto.userId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        }
+
+        Event event = null;
+        if (dto.eventId() != null) {
+            event = eventRepository.findById(dto.eventId())
+                    .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        }
+
+        Booking partialBooking = bookingMapper.toEntity(dto, user, event);
+        Booking savedBooking = bookingService.patchBooking(id, partialBooking);
+        return ResponseEntity.ok(bookingMapper.toResponseDto(savedBooking));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Integer id) {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // 🔎 Filtering endpoints
+    @GetMapping("/search/user")
+    public ResponseEntity<Page<BookingResponseDto>> getBookingsByUser(
+            @RequestParam Integer userId,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                bookingService.findByUserId(userId, pageable).map(bookingMapper::toResponseDto)
+        );
+    }
+
+    @GetMapping("/search/event")
+    public ResponseEntity<Page<BookingResponseDto>> getBookingsByEvent(
+            @RequestParam Integer eventId,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                bookingService.findByEventId(eventId, pageable).map(bookingMapper::toResponseDto)
+        );
     }
 }

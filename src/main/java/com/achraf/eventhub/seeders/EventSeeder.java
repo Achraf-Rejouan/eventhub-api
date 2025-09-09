@@ -22,7 +22,7 @@ public class EventSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (eventService.getAllEvents().isEmpty()) {
+        if (eventService.countEvents() == 0) {
             // Fetch a persisted user (admin or regular user)
             User admin = userService.getAllUsers().stream()
                     .filter(user -> user.getRole() == Role.ADMIN)
