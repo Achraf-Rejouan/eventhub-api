@@ -12,7 +12,7 @@ public class UserMapper {
                 .username(dto.username())
                 .email(dto.email())
                 .password(dto.password())
-                .role(dto.role() != null ? dto.role() : Role.USER)
+                .role(dto.role() != null ? dto.role() : Role.ROLE_USER)
                 .build();
     }
 

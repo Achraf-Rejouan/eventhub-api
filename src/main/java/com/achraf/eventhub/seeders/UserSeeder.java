@@ -22,13 +22,13 @@ public class UserSeeder implements CommandLineRunner {
             admin.setUsername("Admin User");
             admin.setEmail("admin@eventhub.com");
             admin.setPassword("password123");
-            admin.setRole(Role.ADMIN);
+            admin.setRole(Role.ROLE_ADMIN);
 
             User user = new User();
             user.setUsername("Regular User");
             user.setEmail("user@eventhub.com");
             user.setPassword("password321");
-            user.setRole(Role.USER);
+            user.setRole(Role.ROLE_USER);
 
             userService.createUser(admin);
             userService.createUser(user);

@@ -1,8 +1,8 @@
 package com.achraf.eventhub.user;
 
 public enum Role {
-    USER,
-    ADMIN,
-    ORGANIZER
+    ROLE_USER,
+    ROLE_ADMIN,
+    ROLE_ORGANIZER
 }
 

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class EventController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
     @PostMapping
     public ResponseEntity<EventResponseDto> createEvent(@Valid @RequestBody EventDto dto) {
         User organizer = userRepository.findById(dto.organizerId())

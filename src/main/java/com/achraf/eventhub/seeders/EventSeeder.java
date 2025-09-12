@@ -25,7 +25,7 @@ public class EventSeeder implements CommandLineRunner {
         if (eventService.countEvents() == 0) {
             // Fetch a persisted user (admin or regular user)
             User admin = userService.getAllUsers().stream()
-                    .filter(user -> user.getRole() == Role.ADMIN)
+                    .filter(user -> user.getRole() == Role.ROLE_ADMIN)
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("No admin user found. Please seed users first."));
 
